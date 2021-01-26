@@ -1,1 +1,1 @@
-nada por ahora
+Subir el dev, el model y el pred
