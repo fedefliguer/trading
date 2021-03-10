@@ -5,10 +5,6 @@ Indicadores FJF
 import numpy as np
 import pandas as pd
 
-def prueba_np(data):
-  data['npnan'] = np.nan
-  return data
-
 """
 AMPLITUD
 Params: 
