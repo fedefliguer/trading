@@ -52,8 +52,8 @@ def calcula_canalidad_y(data, high_col='<HIGH>', low_col='<LOW>', close_col='<CL
   data['lag_y_1'] = data[close_col].shift(1)
 
 
-  data['nu_dias_y_entre_max_min_5'] = np.where((data['lag_y_1'] < data[high_col]) & (data['lag_y_1'] > data[low_col]), 1, 0)
-  data['nu_dias_y_entre_5pc_5'] = np.where((data['lag_y_1'] < (data[close_col] * 1.05)) & (data['lag_y_1'] > (data[close_col] * 0.95)), 1, 0)
+  data['nu_dias_y_entre_max_min_5'] = where((data['lag_y_1'] < data[high_col]) & (data['lag_y_1'] > data[low_col]), 1, 0)
+  data['nu_dias_y_entre_5pc_5'] = where((data['lag_y_1'] < (data[close_col] * 1.05)) & (data['lag_y_1'] > (data[close_col] * 0.95)), 1, 0)
 
   data['nu_dias_y_entre_max_min_15'] = np.where((data['lag_y_1'] < data[high_col]) & (data['lag_y_1'] > data[low_col]), 1, 0)
   data['nu_dias_y_entre_5pc_15'] = np.where((data['lag_y_1'] < (data[close_col] * 1.05)) & (data['lag_y_1'] > (data[close_col] * 0.95)), 1, 0)
