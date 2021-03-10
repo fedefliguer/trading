@@ -73,7 +73,7 @@ def acc_dist(data, trend_periods=21, open_col='<OPEN>', high_col='<HIGH>', low_c
             ac = ((row[close_col] - row[low_col]) - (row[high_col] - row[close_col])) / (row[high_col] - row[low_col]) * row[vol_col]
         else:
             ac = 0
-        data.set_value(index, 'acc_dist', ac)
+	data.at[index,'acc_dist']=ac
     data['acc_dist_ema' + str(trend_periods)] = data['acc_dist'].ewm(ignore_na=False, min_periods=0, com=trend_periods, adjust=True).mean()
     
     return data
@@ -103,8 +103,7 @@ def on_balance_volume(data, trend_periods=21, close_col='<CLOSE>', vol_col='<VOL
         else:
             last_obv = 0
             current_obv = row[vol_col]
-
-        data.set_value(index, 'obv', current_obv)
+	data.at[index,'obv']=current_obv
 
     data['obv_ema' + str(trend_periods)] = data['obv'].ewm(ignore_na=False, min_periods=0, com=trend_periods, adjust=True).mean()
     
@@ -133,7 +132,7 @@ def price_volume_trend(data, trend_periods=21, close_col='<CLOSE>', vol_col='<VO
         else:
             current_val = row[vol_col]
 
-        data.set_value(index, 'pvt', current_val)
+	data.at[index,'pvt']=current_val
 
     data['pvt_ema' + str(trend_periods)] = data['pvt'].ewm(ignore_na=False, min_periods=0, com=trend_periods, adjust=True).mean()
         
@@ -167,7 +166,7 @@ def average_true_range(data, trend_periods=14, open_col='<OPEN>', high_col='<HIG
         else:
             true_range = np.amax(prices) - np.amin(prices)
 
-        data.set_value(index, 'true_range', true_range)
+	data.at[index,'true_range']=true_range
     data['atr'] = data['true_range'].ewm(ignore_na=False, min_periods=0, com=trend_periods, adjust=True).mean()
     if drop_tr:
         data = data.drop(['true_range'], axis=1)
@@ -200,9 +199,9 @@ def bollinger_bands(data, trend_periods=20, close_col='<CLOSE>'):
         d = 2
         upper_band = middle_band + (d * std)
         lower_band = middle_band - (d * std)
-
-        data.set_value(index, 'bol_bands_upper', upper_band)
-        data.set_value(index, 'bol_bands_lower', lower_band)
+	
+	data.at[index,'bol_bands_upper']=upper_band
+        data.at[index,'bol_bands_lower']=lower_band
 
     return data
 
@@ -231,7 +230,8 @@ def chaikin_oscillator(data, periods_short=3, periods_long=10, high_col='<HIGH>'
             val = val_last + ((row[close_col] - row[low_col]) - (row[high_col] - row[close_col])) / (row[high_col] - row[low_col]) * row[vol_col]
         else:
             val = val_last
-        ac.set_value(index, val)
+	
+	ac.at[index]=val
         val_last = val
 
     ema_long = ac.ewm(ignore_na=False, min_periods=0, com=periods_long, adjust=True).mean()
@@ -290,7 +290,7 @@ def ease_of_movement(data, period=14, high_col='<HIGH>', low_col='<LOW>', vol_co
         box_ratio = (vol / 100000000) / (diff)
         emv = midpoint_move / box_ratio
         
-        data.set_value(index, 'emv', emv)
+	data.at[index,'emv']=emv
         
     data['emv_ema_'+str(period)] = data['emv'].ewm(ignore_na=False, min_periods=0, com=period, adjust=True).mean()
         
@@ -319,8 +319,8 @@ def mass_index(data, period=25, ema_period=9, high_col='<HIGH>', low_col='<LOW>'
             val = div[index-25:index].sum()
         else:
             val = 0
-        data.set_value(index, 'mass_index', val)
-         
+	data.at[index,'mass_index']=val
+	
     return data
 
 """
@@ -363,7 +363,7 @@ def directional_movement_index(data, periods=14, high_col='<HIGH>', low_col='<LO
     data['di_minus'] = (data['dm_minus'] / data['true_range']).ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean()
     
     data['dxi'] = np.abs(data['di_plus'] - data['di_minus']) / (data['di_plus'] + data['di_minus'])
-    data.set_value(0, 'dxi',1.)
+    data.at[0,'dxi']=1.
     data['adx'] = data['dxi'].ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean()
     data = data.drop(['m_plus', 'm_minus', 'dm_plus', 'dm_minus'], axis=1)
     if remove_tr_col:
@@ -413,8 +413,8 @@ def money_flow_index(data, periods=14, vol_col='<VOL>'):
 
             mfi = 1-(1 / (1 + m_r))
 
-            data.set_value(index, 'money_ratio', m_r)
-            data.set_value(index, 'money_flow_index', mfi)
+	    data.at[index,'money_ratio']=m_r
+	    data.at[index,'money_flow_index']=mfi
           
     data = data.drop(['money_flow', 'money_ratio', 'money_flow_positive', 'money_flow_negative'], axis=1)
     
@@ -448,7 +448,7 @@ def negative_volume_index(data, periods=255, close_col='<CLOSE>', vol_col='<VOL>
                 nvi = prev_nvi
         else:
             nvi = 1000
-        data.set_value(index, 'nvi', nvi)
+        data.at[index,'nvi']=nvi
     data['nvi_ema'] = data['nvi'].ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean()
     
     return data
@@ -478,7 +478,7 @@ def positive_volume_index(data, periods=255, close_col='<CLOSE>', vol_col='<VOL>
                 pvi = prev_pvi
         else:
             pvi = 1000
-        data.set_value(index, 'pvi', pvi)
+        data.at[index,'pvi']=pvi
     data['pvi_ema'] = data['pvi'].ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean()
 
     return data
@@ -501,8 +501,7 @@ def momentum(data, periods=14, close_col='<CLOSE>'):
         if index >= periods:
             prev_close = data.at[index-periods, close_col]
             val_perc = (row[close_col] - prev_close)/prev_close
-
-            data.set_value(index, 'momentum', val_perc)
+      	    data.at[index,'momentum']=val_perc
 
     return data
 
