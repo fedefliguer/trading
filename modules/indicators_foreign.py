@@ -528,9 +528,9 @@ def rsi(data, periods=14, close_col='<CLOSE>'):
             
             prev_close = data.at[index-periods, close_col]
             if prev_close < row[close_col]:
-		data.at[index,'rsi_u']=row[close_col] - prev_close
+                data.at[index,'rsi_u'] = row[close_col] - prev_close
             elif prev_close > row[close_col]:
-		data.at[index,'rsi_d']=prev_close - row[close_col]
+                data.at[index,'rsi_d'] = prev_close - row[close_col]
             
     data['rsi'] = data['rsi_u'].ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean() / (data['rsi_u'].ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean() + data['rsi_d'].ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean())
     
@@ -564,7 +564,7 @@ def chaikin_volatility(data, ema_periods=10, change_periods=10, high_col='<HIGH>
             if prev_value == 0:
                 #this is to avoid division by zero below
                 prev_value = 0.0001
-            data.at[index,'chaikin_volatility']= ((row['ch_vol_ema'] - prev_value)/prev_value))
+            data.at[index,'chaikin_volatility'] = ((row['ch_vol_ema'] - prev_value)/prev_value))
             
     data = data.drop(['ch_vol_hl', 'ch_vol_ema'], axis=1)
         
