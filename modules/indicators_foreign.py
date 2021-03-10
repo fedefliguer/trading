@@ -233,7 +233,7 @@ def chaikin_oscillator(data, periods_short=3, periods_long=10, high_col='<HIGH>'
         else:
             val = val_last
 	
-	ac.at[index]=val
+        ac.at[index]=val
         val_last = val
 
     ema_long = ac.ewm(ignore_na=False, min_periods=0, com=periods_long, adjust=True).mean()
@@ -292,7 +292,7 @@ def ease_of_movement(data, period=14, high_col='<HIGH>', low_col='<LOW>', vol_co
         box_ratio = (vol / 100000000) / (diff)
         emv = midpoint_move / box_ratio
         
-	data.at[index,'emv']=emv
+        data.at[index,'emv']=emv
         
     data['emv_ema_'+str(period)] = data['emv'].ewm(ignore_na=False, min_periods=0, com=period, adjust=True).mean()
         
@@ -321,7 +321,7 @@ def mass_index(data, period=25, ema_period=9, high_col='<HIGH>', low_col='<LOW>'
             val = div[index-25:index].sum()
         else:
             val = 0
-	data.at[index,'mass_index']=val
+        data.at[index,'mass_index']=val
 	
     return data
 
@@ -348,19 +348,19 @@ def directional_movement_index(data, periods=14, high_col='<HIGH>', low_col='<LO
     
     for i,row in data.iterrows():
         if i>0:
-            data.set_value(i, 'm_plus', row[high_col] - data.at[i-1, high_col])
-            data.set_value(i, 'm_minus', row[low_col] - data.at[i-1, low_col])
-    
+            data.at[i,'m_plus']=row[high_col] - data.at[i-1, high_col])
+            data.at[i,'m_minus']=row[low_col] - data.at[i-1, low_col])
+	    
     data['dm_plus'] = 0.
     data['dm_minus'] = 0.
     
     for i,row in data.iterrows():
         if row['m_plus'] > row['m_minus'] and row['m_plus'] > 0:
-            data.set_value(i, 'dm_plus', row['m_plus'])
+            data.at[i,'dm_plus']= row['m_plus']
             
         if row['m_minus'] > row['m_plus'] and row['m_minus'] > 0:
-            data.set_value(i, 'dm_minus', row['m_minus'])
-    
+            data.at[i,'dm_minus']=row['m_minus']
+
     data['di_plus'] = (data['dm_plus'] / data['true_range']).ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean()
     data['di_minus'] = (data['dm_minus'] / data['true_range']).ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean()
     
@@ -399,9 +399,9 @@ def money_flow_index(data, periods=14, vol_col='<VOL>'):
     for index,row in data.iterrows():
         if index > 0:
             if row['typical_price'] < data.at[index-1, 'typical_price']:
-                data.set_value(index, 'money_flow_positive', row['money_flow'])
+                data.at[index,'money_flow_positive']=row['money_flow']
             else:
-                data.set_value(index, 'money_flow_negative', row['money_flow'])
+                data.at[index,'money_flow_negative']=row['money_flow']
     
         if index >= periods:
             period_slice = data['money_flow'][index-periods:index]
@@ -415,8 +415,8 @@ def money_flow_index(data, periods=14, vol_col='<VOL>'):
 
             mfi = 1-(1 / (1 + m_r))
 
-	    data.at[index,'money_ratio']=m_r
-	    data.at[index,'money_flow_index']=mfi
+            data.at[index,'money_ratio']=m_r
+            data.at[index,'money_flow_index']=mfi
           
     data = data.drop(['money_flow', 'money_ratio', 'money_flow_positive', 'money_flow_negative'], axis=1)
     
@@ -528,9 +528,9 @@ def rsi(data, periods=14, close_col='<CLOSE>'):
             
             prev_close = data.at[index-periods, close_col]
             if prev_close < row[close_col]:
-                data.set_value(index, 'rsi_u', row[close_col] - prev_close)
+		data.at[index,'rsi_u']=row[close_col] - prev_close
             elif prev_close > row[close_col]:
-                data.set_value(index, 'rsi_d', prev_close - row[close_col])
+		data.at[index,'rsi_d']=prev_close - row[close_col]
             
     data['rsi'] = data['rsi_u'].ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean() / (data['rsi_u'].ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean() + data['rsi_d'].ewm(ignore_na=False, min_periods=0, com=periods, adjust=True).mean())
     
@@ -564,7 +564,7 @@ def chaikin_volatility(data, ema_periods=10, change_periods=10, high_col='<HIGH>
             if prev_value == 0:
                 #this is to avoid division by zero below
                 prev_value = 0.0001
-            data.set_value(index, 'chaikin_volatility', ((row['ch_vol_ema'] - prev_value)/prev_value))
+            data.at[index,'chaikin_volatility']= ((row['ch_vol_ema'] - prev_value)/prev_value))
             
     data = data.drop(['ch_vol_hl', 'ch_vol_ema'], axis=1)
         
@@ -595,8 +595,8 @@ def williams_ad(data, high_col='<HIGH>', low_col='<LOW>', close_col='<CLOSE>'):
                 ad = row[close_col] - max(prev_close, row[high_col])
             else:
                 ad = 0.
-                                                                                                        
-            data.set_value(index, 'williams_ad', (ad+prev_value))
+
+            data.at[index,'williams_ad']= (ad+prev_value)		
         
     return data
 
@@ -618,9 +618,9 @@ def williams_r(data, periods=14, high_col='<HIGH>', low_col='<LOW>', close_col='
     
     for index,row in data.iterrows():
         if index > periods:
-            data.set_value(index, 'williams_r', ((max(data[high_col][index-periods:index]) - row[close_col]) / 
-                                                 (max(data[high_col][index-periods:index]) - min(data[low_col][index-periods:index]))))
-        
+            data.at[index,'williams_r']= ((max(data[high_col][index-periods:index]) - row[close_col]) / 
+                                                 (max(data[high_col][index-periods:index]) - min(data[low_col][index-periods:index])))	
+       
     return data
 
 """
@@ -672,19 +672,20 @@ def ultimate_oscillator(data, period_1=7,period_2=14, period_3=28, high_col='<HI
             bp = row[close_col] - min(row[low_col], data.at[index-1, close_col])
             tr = max(row[high_col], data.at[index-1, close_col]) - min(row[low_col], data.at[index-1, close_col])
             
-            data.set_value(index, 'uo_bp', bp)
-            data.set_value(index, 'uo_tr', tr)
+            data.at[index,'uo_bp']=bp
+            data.at[index,'uo_tr']=tr
+	
             if index >= period_1:
                 uo_avg_1 = sum(data['uo_bp'][index-period_1:index]) / sum(data['uo_tr'][index-period_1:index])
-                data.set_value(index, 'uo_avg_1', uo_avg_1)
+                data.at[index,'uo_avg_1']=uo_avg_1
             if index >= period_2:
                 uo_avg_2 = sum(data['uo_bp'][index-period_2:index]) / sum(data['uo_tr'][index-period_2:index])
-                data.set_value(index, 'uo_avg_2', uo_avg_2)
+                data.at[index,'uo_avg_2']=uo_avg_2
             if index >= period_3:
                 uo_avg_3 = sum(data['uo_bp'][index-period_3:index]) / sum(data['uo_tr'][index-period_3:index])
-                data.set_value(index, 'uo_avg_3', uo_avg_3)
+                data.at[index,'uo_avg_3']=uo_avg_3
                 uo = (4 * uo_avg_1 + 2 * uo_avg_2 + uo_avg_3) / 7
-                data.set_value(index, 'ultimate_oscillator', uo)
+                data.at[index,'ultimate_oscillator']=uo
 
     data = data.drop(['uo_bp', 'uo_tr', 'uo_avg_1', 'uo_avg_2', 'uo_avg_3'], axis=1)
         
