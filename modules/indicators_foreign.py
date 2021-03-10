@@ -348,8 +348,8 @@ def directional_movement_index(data, periods=14, high_col='<HIGH>', low_col='<LO
     
     for i,row in data.iterrows():
         if i>0:
-            data.at[i,'m_plus']=row[high_col] - data.at[i-1, high_col])
-            data.at[i,'m_minus']=row[low_col] - data.at[i-1, low_col])
+            data.at[i,'m_plus']=row[high_col] - data.at[i-1, high_col]
+            data.at[i,'m_minus']=row[low_col] - data.at[i-1, low_col]
 	    
     data['dm_plus'] = 0.
     data['dm_minus'] = 0.
