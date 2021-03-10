@@ -73,7 +73,7 @@ def acc_dist(data, trend_periods=21, open_col='<OPEN>', high_col='<HIGH>', low_c
             ac = ((row[close_col] - row[low_col]) - (row[high_col] - row[close_col])) / (row[high_col] - row[low_col]) * row[vol_col]
         else:
             ac = 0
-	data.at[index,'acc_dist']=ac
+        data.at[index,'acc_dist']=ac
     data['acc_dist_ema' + str(trend_periods)] = data['acc_dist'].ewm(ignore_na=False, min_periods=0, com=trend_periods, adjust=True).mean()
     
     return data
