@@ -564,7 +564,7 @@ def chaikin_volatility(data, ema_periods=10, change_periods=10, high_col='<HIGH>
             if prev_value == 0:
                 #this is to avoid division by zero below
                 prev_value = 0.0001
-            data.at[index,'chaikin_volatility'] = ((row['ch_vol_ema'] - prev_value)/prev_value))
+            data.at[index,'chaikin_volatility'] = ((row['ch_vol_ema'] - prev_value)/prev_value)
             
     data = data.drop(['ch_vol_hl', 'ch_vol_ema'], axis=1)
         
@@ -596,7 +596,7 @@ def williams_ad(data, high_col='<HIGH>', low_col='<LOW>', close_col='<CLOSE>'):
             else:
                 ad = 0.
 
-            data.at[index,'williams_ad']= (ad+prev_value)		
+            data.at[index,'williams_ad'] = (ad+prev_value)		
         
     return data
 
