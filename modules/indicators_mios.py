@@ -33,10 +33,10 @@ Params:
 Returns:
     copy of 'data' DataFrame with 'amplitud' column added
 """
-def estandariza_volumen(data, vol_col='<VOLUME>'):
-  mean_vl = data['<VOLUME>'].mean()
-  std_vl = data['<VOLUME>'].std()
-  data['<VOLUME>'] = (data['<VOLUME>'] - mean_vl)/std_vl
+def estandariza_volumen(data, vol_col='<VOL>'):
+  mean_vl = data['<VOL>'].mean()
+  std_vl = data['<VOL>'].std()
+  data['<VOL>'] = (data['<VOL>'] - mean_vl)/std_vl
   return data
 
 
