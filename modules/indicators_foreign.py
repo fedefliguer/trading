@@ -103,7 +103,7 @@ def on_balance_volume(data, trend_periods=21, close_col='<CLOSE>', vol_col='<VOL
         else:
             last_obv = 0
             current_obv = row[vol_col]
-	data.at[index,'obv']=current_obv
+        data.at[index,'obv']=current_obv
 
     data['obv_ema' + str(trend_periods)] = data['obv'].ewm(ignore_na=False, min_periods=0, com=trend_periods, adjust=True).mean()
     
@@ -116,7 +116,7 @@ Params:
     data: pandas DataFrame
     trend_periods: the over which to calculate PVT
 	close_col: the name of the CLOSE values column
-	vol_col: the name of the VOL values column
+	vol_col: the name of the VOL values columna
     
 Returns:
     copy of 'data' DataFrame with 'pvt' and 'pvt_ema[trend_periods]' columns added
@@ -132,7 +132,7 @@ def price_volume_trend(data, trend_periods=21, close_col='<CLOSE>', vol_col='<VO
         else:
             current_val = row[vol_col]
 
-	data.at[index,'pvt']=current_val
+        data.at[index,'pvt']=current_val
 
     data['pvt_ema' + str(trend_periods)] = data['pvt'].ewm(ignore_na=False, min_periods=0, com=trend_periods, adjust=True).mean()
         
