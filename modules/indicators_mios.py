@@ -17,7 +17,7 @@ Returns:
     copy of 'data' DataFrame with 'amplitud' column added, relativa al precio de cierre
 """
 def calcula_amplitud(data, high_col='<HIGH>', low_col='<LOW>', close_col='<CLOSE>'):
-  data['<AMP>'] = (data[high_col] - data[low_col])/data[close_col]
+  data['amp_std'] = (data[high_col] - data[low_col])/data[close_col]
   return data
 
 """
@@ -32,7 +32,7 @@ Returns:
 def estandariza_volumen(data, vol_col='<VOL>'):
   mean_vl = data['<VOL>'].mean()
   std_vl = data['<VOL>'].std()
-  data['<VOL>'] = (data['<VOL>'] - mean_vl)/std_vl
+  data['vol_std'] = (data['<VOL>'] - mean_vl)/std_vl
   return data
 
 """
