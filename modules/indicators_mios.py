@@ -32,7 +32,10 @@ Returns:
 def estandariza_volumen(data, vol_col='<VOL>'):
   mean_vl = data['<VOL>'].mean()
   std_vl = data['<VOL>'].std()
-  data['<VOL>'] = (data['<VOL>'] - mean_vl)/std_vl
+  data['vol_std'] = (data['<VOL>'] - mean_vl)/std_vl
+  data = data.drop('<VOL>', axis=1)
+  data['<VOL>'] = data['vol_std']
+  data = data.drop('vol_std', axis=1)
   return data
 
 """
