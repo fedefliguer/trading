@@ -17,6 +17,7 @@ Returns:
     copy of 'data' DataFrame with 'amplitud' column added, relativa al precio de cierre
 """
 def calcula_amplitud(data, high_col='<HIGH>', low_col='<LOW>', close_col='<CLOSE>'):
+  """Agrega una columna (no relativa a Y) con la proporción que tiene la amplitud del precio."""
   data['amp_std'] = (data[high_col] - data[low_col])/data[close_col]
   return data
 
@@ -30,6 +31,7 @@ Returns:
     copy of 'data' DataFrame with 'amplitud' column added
 """
 def estandariza_volumen(data, vol_col='<VOL>'):
+  """Agrega una columna (no relativa a Y) con el volumen en forma estandarizada."""
   mean_vl = data['<VOL>'].mean()
   std_vl = data['<VOL>'].std()
   data['vol_std'] = (data['<VOL>'] - mean_vl)/std_vl
