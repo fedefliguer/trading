@@ -73,9 +73,8 @@ Params:
 Returns:
     copy of 'data' DataFrame con columnas de número de días en (5, 30, 90, 180) los que el histograma MACD fue positivo, negativo e igual al del cierre
 """
-def calcula_canalidad_histog_macd(data):
-  list = [5, 30, 90, 180]
-  for ventana in list:
+def calcula_canalidad_histog_macd(data, histog_col='macd_histog', ventanas = [5, 30, 90, 180]):
+  for ventana in ventanas:
     i = 1
     data['lag_histog_1'] = data.histog.shift(1)
     colname_nu_1 = "nu_dias_histog_entre_5pc_%s" % (ventana)
