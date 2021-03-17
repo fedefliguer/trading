@@ -18,6 +18,7 @@ Returns:
     copy of 'data' DataFrame with 'ema[period]' column added
 """
 def ema(data, period=0, column='<CLOSE>'):
+    """Agrega una columna con la media movil exponencial suavizada para los N períodos."""
     data['ema' + str(period)] = data[column].ewm(ignore_na=False, min_periods=period, com=period, adjust=True).mean()
     
     return data
