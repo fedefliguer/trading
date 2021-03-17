@@ -46,73 +46,22 @@ Params:
 Returns:
     copy of 'data' DataFrame con columnas de número de días en los que el cierre de Y estuvo entre el máximo y el mínimo de ese día, y número de días en los que el cierre de Y estuvo +-5% del cierre, en los últimos (5, 15, 30, 90, 180)
 """
-def calcula_canalidad_y(data, high_col='<HIGH>', low_col='<LOW>', close_col='<CLOSE>'):
-  i = 1
-  data['lag_y_1'] = data[close_col].shift(1)
-
-
-  data['nu_dias_y_entre_max_min_5'] = np.where((data['lag_y_1'] < data[high_col]) & (data['lag_y_1'] > data[low_col]), 1, 0)
-  data['nu_dias_y_entre_5pc_5'] = np.where((data['lag_y_1'] < (data[close_col] * 1.05)) & (data['lag_y_1'] > (data[close_col] * 0.95)), 1, 0)
-
-  data['nu_dias_y_entre_max_min_15'] = np.where((data['lag_y_1'] < data[high_col]) & (data['lag_y_1'] > data[low_col]), 1, 0)
-  data['nu_dias_y_entre_5pc_15'] = np.where((data['lag_y_1'] < (data[close_col] * 1.05)) & (data['lag_y_1'] > (data[close_col] * 0.95)), 1, 0)
-
-  data['nu_dias_y_entre_max_min_30'] = np.where((data['lag_y_1'] < data[high_col]) & (data['lag_y_1'] > data[low_col]), 1, 0)
-  data['nu_dias_y_entre_5pc_30'] = np.where((data['lag_y_1'] < (data[close_col] * 1.05)) & (data['lag_y_1'] > (data[close_col] * 0.95)), 1, 0)
-
-  data['nu_dias_y_entre_max_min_90'] = np.where((data['lag_y_1'] < data[high_col]) & (data['lag_y_1'] > data[low_col]), 1, 0)
-  data['nu_dias_y_entre_5pc_90'] = np.where((data['lag_y_1'] < (data[close_col] * 1.05)) & (data['lag_y_1'] > (data[close_col] * 0.95)), 1, 0)
-
-  data['nu_dias_y_entre_max_min_180'] = np.where((data['lag_y_1'] < data[high_col]) & (data['lag_y_1'] > data[low_col]), 1, 0)
-  data['nu_dias_y_entre_5pc_180'] = np.where((data['lag_y_1'] < (data[close_col] * 1.05)) & (data['lag_y_1'] > (data[close_col] * 0.95)), 1, 0)
-
-  data = data.drop(['lag_y_1'], axis=1)
-
-  i = 2
-  while i <= 5:
-    colname = "lag_y_%s" % (i)
-    data[colname] = data[close_col].shift(i)
-    data['nu_dias_y_entre_max_min_5'] = data['nu_dias_y_entre_max_min_5'] + np.where((data[colname] < data[high_col]) & (data[colname] > data[low_col]), 1, 0)
-    data['nu_dias_y_entre_5pc_5'] = data['nu_dias_y_entre_5pc_5'] + np.where((data[colname] < (data[close_col] * 1.05)) & (data[colname] > (data[close_col] * 0.95)), 1, 0)
-    i = i + 1
-    data = data.drop([colname], axis=1)
-
-  i = 2
-  while i <= 15:
-    colname = "lag_y_%s" % (i)
-    data[colname] = data[close_col].shift(i)
-    data['nu_dias_y_entre_max_min_15'] = data['nu_dias_y_entre_max_min_15'] + np.where((data[colname] < data[high_col]) & (data[colname] > data[low_col]), 1, 0)
-    data['nu_dias_y_entre_5pc_15'] = data['nu_dias_y_entre_5pc_15'] + np.where((data[colname] < (data[close_col] * 1.05)) & (data[colname] > (data[close_col] * 0.95)), 1, 0)
-    i = i + 1
-    data = data.drop([colname], axis=1)
-
-  i = 2
-  while i <= 30:
-    colname = "lag_y_%s" % (i)
-    data[colname] = data[close_col].shift(i)
-    data['nu_dias_y_entre_max_min_30'] = data['nu_dias_y_entre_max_min_30'] + np.where((data[colname] < data[high_col]) & (data[colname] > data[low_col]), 1, 0)
-    data['nu_dias_y_entre_5pc_30'] = data['nu_dias_y_entre_5pc_30'] + np.where((data[colname] < (data[close_col] * 1.05)) & (data[colname] > (data[close_col] * 0.95)), 1, 0)
-    i = i + 1
-    data = data.drop([colname], axis=1)
-
-  i = 2
-  while i <= 90:
-    colname = "lag_y_%s" % (i)
-    data[colname] = data[close_col].shift(i)
-    data['nu_dias_y_entre_max_min_90'] = data['nu_dias_y_entre_max_min_90'] + np.where((data[colname] < data[high_col]) & (data[colname] > data[low_col]), 1, 0)
-    data['nu_dias_y_entre_5pc_90'] = data['nu_dias_y_entre_5pc_90'] + np.where((data[colname] < (data[close_col] * 1.05)) & (data[colname] > (data[close_col] * 0.95)), 1, 0)
-    i = i + 1
-    data = data.drop([colname], axis=1)
-
-  i = 2
-  while i <= 180:
-    colname = "lag_y_%s" % (i)
-    data[colname] = data[close_col].shift(i)
-    data['nu_dias_y_entre_max_min_180'] = data['nu_dias_y_entre_max_min_180'] + np.where((data[colname] < data[high_col]) & (data[colname] > data[low_col]), 1, 0)
-    data['nu_dias_y_entre_5pc_180'] = data['nu_dias_y_entre_5pc_180'] + np.where((data[colname] < (data[close_col] * 1.05)) & (data[colname] > (data[close_col] * 0.95)), 1, 0)
-    i = i + 1
-    data = data.drop([colname], axis=1)
-
+def calcula_canalidad_y(data, high_col='<HIGH>', low_col='<LOW>', close_col='<CLOSE>', ventanas = [5, 15, 30, 90]):
+  for ventana in lista_ventanas: 
+    data['lag_y_1'] = data[close_col].shift(1)
+    colname_maxmin = "nu_dias_y_entre_max_min_%s" % (ventana)
+    data[colname_maxmin] = np.where((data['lag_y_1'] < data[high_col]) & (data['lag_y_1'] > data[low_col]), 1, 0)
+    colname_5pc = "nu_dias_y_entre_5pc_%s" % (ventana)
+    data[colname_5pc] = np.where((data['lag_y_1'] < (data[close_col] * 1.05)) & (data['lag_y_1'] > (data[close_col] * 0.95)), 1, 0)
+    data = data.drop(['lag_y_1'], axis=1)
+    i = 2
+    while i <= ventana:
+      colname_lag = "lag_y_%s" % (i)
+      data[colname_lag] = data[close_col].shift(i)
+      data[colname_maxmin] = data[colname_maxmin] + np.where((data[colname_lag] < data[high_col]) & (data[colname_lag] > data[low_col]), 1, 0)
+      data[colname_5pc] = data[colname_5pc] + np.where((data[colname_lag] < (data[close_col] * 1.05)) & (data[colname_lag] > (data[close_col] * 0.95)), 1, 0)
+      i = i + 1
+      data = data.drop([colname_lag], axis=1)
   return data
 
 """
