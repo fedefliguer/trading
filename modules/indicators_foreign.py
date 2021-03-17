@@ -18,7 +18,7 @@ Returns:
     copy of 'data' DataFrame with 'ema[period]' column added
 """
 def ema(data, period=0, column='<CLOSE>'):
-    """Agrega una columna con la media movil exponencial suavizada para los N períodos."""
+    """Agrega una columna (relativa a Y) con la media movil exponencial suavizada para los N períodos."""
     data['ema' + str(period)] = data[column].ewm(ignore_na=False, min_periods=period, com=period, adjust=True).mean()
     
     return data
@@ -37,6 +37,7 @@ Returns:
     copy of 'data' DataFrame with 'macd_val' and 'macd_signal_line' columns added
 """
 def macd(data, period_long=26, period_short=12, period_signal=9, column='<CLOSE>'):
+    """Agrega tres columnas (relativas a Y) con el valor del MACD, la linea de señal del MACD y el Histograma MACD."""
     remove_cols = []
     if not 'ema' + str(period_long) in data.columns:
         data = ema(data, period_long)
@@ -48,7 +49,8 @@ def macd(data, period_long=26, period_short=12, period_signal=9, column='<CLOSE>
 
     data['macd_val'] = data['ema' + str(period_short)] - data['ema' + str(period_long)]
     data['macd_signal_line'] = data['macd_val'].ewm(ignore_na=False, min_periods=0, com=period_signal, adjust=True).mean()
-
+    data['macd_histog'] = data['macd_val'] - data['macd_signal_line']
+	
     data = data.drop(remove_cols, axis=1)
         
     return data
