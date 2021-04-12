@@ -48,7 +48,7 @@ Params:
 Returns:
     copy of 'data' DataFrame con columnas de número de días en los que el cierre de Y estuvo entre el máximo y el mínimo de ese día, y número de días en los que el cierre de Y estuvo +-5% del cierre, en los últimos (5, 15, 30, 90, 180)
 """
-def calcula_canalidad_y(data, high_col='<HIGH>', low_col='<LOW>', close_col='<CLOSE>', ventanas = [5, 30, 90, 180]):
+def calcula_canalidad_y(data, high_col='<HIGH>', low_col='<LOW>', close_col='<CLOSE>', lista_ventanas = [5, 30, 90, 180]):
   for ventana in lista_ventanas: 
     data['lag_y_1'] = data[close_col].shift(1)
     colname_maxmin = "nu_dias_y_entre_max_min_%s" % (ventana)
