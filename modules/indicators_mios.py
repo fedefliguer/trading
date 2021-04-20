@@ -135,10 +135,10 @@ def calcula_AT_tendencias(data, lags, close_col='<CLOSE>', date_col='<FC>'):
   data['T'] = np.where((data[close_col]>data['maxb']) & (data[close_col]>data['maxf']), 1, 0)
   data['P'] = np.where((data[close_col]<data['minb']) & (data[close_col]<data['minf']), 1, 0)
 
-  techos = data[(data['T']==1)]
+  techos = data[(data['T']==1)].copy()
   techos['m'] = (techos[close_col].shift(1) - techos[close_col])/(techos[date_col].shift(1) - techos[date_col]).dt.days
   techos.name = 'techos'
-  pisos = data[(data['P']==1)]
+  pisos = data[(data['P']==1)].copy()
   pisos['m'] = (pisos[close_col].shift(1) - pisos[close_col])/(pisos[date_col].shift(1) - pisos[date_col]).dt.days
   pisos.name = 'pisos'
   data_list = [techos, pisos]
@@ -146,7 +146,11 @@ def calcula_AT_tendencias(data, lags, close_col='<CLOSE>', date_col='<FC>'):
   for data_picos in data_list:  # En cada data (techos y pisos)
     name = data_picos.name
     dias = len(data)
+    print(data_picos.name, " - Número de picos: ", data_picos.iloc[1:].shape[0])
+    iterrow_actual = 1
     for index, row in data_picos.iloc[1:].iterrows(): # Para cada pico detectado (fila del data) a partir del segundo (porque el primero no tiene anterior, no tiene tendencia)
+      print(data_picos.name, ": Desarrollo el pico ", iterrow_actual)
+      iterrow_actual = iterrow_actual+1
       y_start = row[close_col]
       pendiente = row['m']
       if (dias < np.where(data[date_col]==row[date_col])[0] + lags):
@@ -191,7 +195,12 @@ def calcula_AT_tendencias(data, lags, close_col='<CLOSE>', date_col='<FC>'):
   names_techos = data.filter(regex=("(techos)(.*)")).columns
   names_pisos = data.filter(regex=("(pisos)(.*)")).columns
 
+  print("Filas: ", data.shape[0])
+  j = 0
   for index, row in data.iterrows():  # Por cada fila del data original (por cada precio)
+    j = j + 1
+    if (j % 1000 == 0):
+      print("Voy por la fila ", j)
 
     # Genero las rows vacías con las variables agregadas
     nu_pruebas_techo_vivo_mas_probado = np.nan    
