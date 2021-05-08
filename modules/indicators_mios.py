@@ -78,9 +78,9 @@ Returns:
 def calcula_canalidad_histog_macd(data, histog_col='macd_histog', lista_ventanas = [5, 30, 90, 180]):
   for ventana in ventanas:
     i = 1
-    data['lag_histog_1'] = data.histog.shift(1)
+    data['lag_histog_1'] = data[histog_col].shift(1)
     colname_nu_1 = "nu_dias_histog_entre_5pc_%s" % (ventana)
-    data[colname_nu_1] = np.where((data['lag_histog_1'] < (data.histog * 1.05)) & (data['lag_histog_1'] > (data.histog * 0.95)), 1, 0)
+    data[colname_nu_1] = np.where((data['lag_histog_1'] < (data[histog_col] * 1.05)) & (data['lag_histog_1'] > (data[histog_col] * 0.95)), 1, 0)
 
     colname_nu_2 = "nu_dias_histog_positivo_%s" % (ventana)
     data[colname_nu_2] = np.where((data['lag_histog_1']>0), 1, 0)
@@ -89,17 +89,17 @@ def calcula_canalidad_histog_macd(data, histog_col='macd_histog', lista_ventanas
     data[colname_nu_3] = np.where((data['lag_histog_1']<0), 1, 0)
 
     colname_nu_4 = "nu_dias_histog_mismo_signo_%s" % (ventana)
-    data[colname_nu_4] = np.where(((data['lag_histog_1']>0) & (data['histog']>0))|((data['lag_histog_1']<0) & (data['histog']<0)), 1, 0)
+    data[colname_nu_4] = np.where(((data['lag_histog_1']>0) & (data[histog_col]>0))|((data['lag_histog_1']<0) & (data[histog_col]<0)), 1, 0)
 
     data = data.drop(['lag_histog_1'], axis=1)
     i = 2
     while i < (ventana+1):
       colname = "lag_histog_%s" % (i)
-      data[colname] = data.histog.shift(i)
-      data[colname_nu_1] = data[colname_nu_1] + np.where((data[colname] < (data.histog * 1.50)) & (data[colname] > (data.histog * 0.50)), 1, 0)
+      data[colname] = data[histog_col].shift(i)
+      data[colname_nu_1] = data[colname_nu_1] + np.where((data[colname] < (data[histog_col] * 1.50)) & (data[colname] > (data[histog_col] * 0.50)), 1, 0)
       data[colname_nu_2] = data[colname_nu_2] + np.where((data[colname]>0), 1, 0)
       data[colname_nu_3] = data[colname_nu_3] + np.where((data[colname]<0), 1, 0)
-      data[colname_nu_4] = data[colname_nu_4] + np.where(((data[colname]>0) & (data['histog']>0))|((data[colname]<0) & (data['histog']<0)), 1, 0)
+      data[colname_nu_4] = data[colname_nu_4] + np.where(((data[colname]>0) & (data[histog_col]>0))|((data[colname]<0) & (data[histog_col]<0)), 1, 0)
       i = i + 1
       data = data.drop([colname], axis=1)
   return data
